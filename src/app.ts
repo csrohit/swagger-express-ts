@@ -1,11 +1,11 @@
+import { RegisterRoutes } from '../build/routes';
 import express, {Application, Request, RequestHandler, Response} from 'express';
 import morgan from 'morgan';
 import swaggerUi from 'swagger-ui-express';
+import * as swaggerDocument from  '../swagger.json';
 
 
 import logger, { outStream} from './helpers/logger';
-import index from './routes/index';
-
 
 const app: Application = express();
 
@@ -27,18 +27,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // endpoints
-app.use('/api', index);
+// app.use('/api', index);
 app.use(
     "/docs",
     swaggerUi.serve,
-    swaggerUi.setup(undefined, {
-      swaggerOptions: {
-        url: "/swagger.json",
-      },
-    })
+    swaggerUi.setup(swaggerDocument)
   );
 
-
+RegisterRoutes(app);
 
 // error handling middleware
 app.use((err: Error, req: Request, res: Response, next: RequestHandler) => {

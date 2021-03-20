@@ -1,5 +1,6 @@
 import express, {Application, Request, RequestHandler, Response} from 'express';
 import morgan from 'morgan';
+import swaggerUi from 'swagger-ui-express';
 
 
 import logger, { outStream} from './helpers/logger';
@@ -21,9 +22,21 @@ app.use(morgan((tokens, req: Request, res: Response) => {
 morgan.token('host', (req: Request, res: Response) => {
     return req.hostname;
 });
+// Only using json for api
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
+// endpoints
 app.use('/api', index);
-
+app.use(
+    "/docs",
+    swaggerUi.serve,
+    swaggerUi.setup(undefined, {
+      swaggerOptions: {
+        url: "/swagger.json",
+      },
+    })
+  );
 
 
 
